@@ -1,0 +1,60 @@
+# Vivado build artifacts (regenerables)
+P_3_stream_adder_kr260/vivado_project/
+P_02_simple_axi_reg/vivado_project/
+P_3_stream_adder/build/
+**/vivado_project/
+**/*.jou
+**/*.log
+**/*.str
+**/*.backup.jou
+**/*.backup.log
+**/.Xil/
+**/.cache/
+**/webtalk*
+**/xrun.key
+**/fsm_encoding*
+
+# Vivado checkpoints y runs (grandes)
+**/*.runs/
+**/*.gen/
+**/*.cache/
+**/*.hw/
+**/*.ip_user_files/
+**/*.sim/
+**/*.srcs/
+
+# XSA y bit crudos (regenerables)
+**/*.xsa
+**/*.bit
+**/design_1_wrapper.*
+
+# PetaLinux artefactos (no source)
+deploy_kr260/BOOT.BIN
+deploy_kr260/image.ub
+deploy_kr260/Image
+deploy_kr260/rootfs.tar.gz
+deploy_kr260/system.dtb
+deploy_kr260/boot.scr
+deploy_kr260/kria_kit.tar.gz
+
+# Installer (3 GB)
+petalinux-installer.run
+petalinux-v*.run
+
+# Archivos temporales
+pipeline_nocturno.sh
+.vscode/
+*.swp
+*.bak
+*.tmp
+Thumbs.db
+.DS_Store
+
+# read.txt vacío
+read.txt
+
+# Claude settings
+.claude/
+
+# Vivado runtime artifacts
+**/dfx_runtime.txt
