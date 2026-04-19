@@ -1,0 +1,4 @@
+all:
+{
+    [destination_device = pl] /mnt/e/petalinux-instalado/P_02_simple_axi_reg/vivado_project/kr260_simple_axi.runs/impl_1/design_1_wrapper.bit
+}

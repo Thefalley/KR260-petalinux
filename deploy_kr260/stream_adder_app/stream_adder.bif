@@ -1,0 +1,4 @@
+all:
+{
+    [destination_device = pl] /home/jce03/petalinux-proyectos/P_01/project-spec/hw-description/design_1_wrapper.bit
+}
