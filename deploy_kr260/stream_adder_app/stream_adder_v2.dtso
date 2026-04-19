@@ -1,0 +1,80 @@
+/*
+ * stream_adder_v2.dtso - overlay corregido (no tumba eth0)
+ *
+ * Cambios respecto v1:
+ * - firmware-name bajo &fpga_full (requerido para que xmutil cargue el bit.bin)
+ * - Se ELIMINA xlnx,fclk con assigned-clock-rates (reprograma IOPLL -> tumba GEM3)
+ * - En su lugar: fixed-factor-clock colgado de &zynqmp_clk 71
+ * - Se ELIMINA afi0 (config-afi con ceros es toxico; innecesario si no cambias
+ *   ancho AXI HP por defecto)
+ * - Se ordenan interrupt-names correctamente
+ * - interrupt-parent = <&gic> (sin v3)
+ */
+
+/dts-v1/;
+/plugin/;
+
+&fpga_full {
+    #address-cells = <2>;
+    #size-cells = <2>;
+    firmware-name = "stream_adder.bit.bin";
+    resets = <&zynqmp_reset 116>;
+};
+
+&amba {
+    #address-cells = <2>;
+    #size-cells = <2>;
+
+    /*
+     * fixed-factor-clock NO reprograma el PLL, solo lo refleja.
+     * Esto evita el side-effect de tirar GEM3 (eth0) cuando cargamos overlay.
+     */
+    pl0_ref_100M: pl0_ref_100M {
+        #clock-cells = <0>;
+        compatible = "fixed-factor-clock";
+        clocks = <&zynqmp_clk 71>;      /* pl_clk0 del PS */
+        clock-div = <1>;
+        clock-mult = <1>;
+    };
+
+    axi_dma_0: dma@a0000000 {
+        #dma-cells = <1>;
+        compatible = "xlnx,axi-dma-1.00.a";
+        reg = <0x0 0xa0000000 0x0 0x10000>;
+
+        clock-names = "s_axi_lite_aclk", "m_axi_mm2s_aclk", "m_axi_s2mm_aclk";
+        clocks = <&pl0_ref_100M>, <&pl0_ref_100M>, <&pl0_ref_100M>;
+
+        interrupt-parent = <&gic>;
+        interrupt-names = "mm2s_introut", "s2mm_introut";
+        interrupts = <0 89 4>, <0 90 4>;
+
+        xlnx,addrwidth = /bits/ 8 <32>;
+        xlnx,sg-length-width = <16>;
+
+        dma-channel@a0000000 {
+            compatible = "xlnx,axi-dma-mm2s-channel";
+            dma-channels = <1>;
+            interrupts = <0 89 4>;
+            xlnx,datawidth = <32>;
+            xlnx,device-id = <0>;
+            xlnx,include-dre;
+        };
+
+        dma-channel@a0000030 {
+            compatible = "xlnx,axi-dma-s2mm-channel";
+            dma-channels = <1>;
+            interrupts = <0 90 4>;
+            xlnx,datawidth = <32>;
+            xlnx,device-id = <0>;
+            xlnx,include-dre;
+        };
+    };
+
+    stream_adder_0: stream_adder@a0010000 {
+        compatible = "generic-uio";
+        reg = <0x0 0xa0010000 0x0 0x1000>;
+        clocks = <&pl0_ref_100M>;
+        clock-names = "clk";
+    };
+};
